@@ -58,7 +58,8 @@ public class CityConnect {
 	
 	//These are the recognized commands
 	private static final String COMMAND_ADDROUTE = "addroute";
-
+	private static final String COMMAND_GETDISTANCE = "getdistance";
+  	private static final String COMMAND_EXIT = "exit";
 	// This is used to indicate there is no suitable slot to store route
 	private static final int SLOT_UNAVAILABLE = -1;
 	
@@ -124,25 +125,18 @@ public class CityConnect {
 	}
 
 	public static String executeCommand(String userCommand) {
-		if (userCommand.trim().equals(""))
-			return String.format(MESSAGE_INVALID_FORMAT, userCommand);
+		if (userCommand.trim().equals("")) {
+      			return invalidFormat(userCommand);
+    		}
 
-		String commandTypeString = getFirstWord(userCommand);
-
-		COMMAND_TYPE commandType = determineCommandType(commandTypeString);
-
-		switch (commandType) {
-		case ADD_ROUTE:
-			return addRoute(userCommand);
-		case GET_DISTANCE:
-			return getDistance(userCommand);
-		case INVALID:
-			return String.format(MESSAGE_INVALID_FORMAT, userCommand);
-		case EXIT:
-			System.exit(0);
-		default:
-			//throw an error if the command is not recognized
-			throw new Error("Unrecognized command type");
+    		switch (determineCommandType(getFirstWord(userCommand))) {
+      			case ADD_ROUTE : return addRoute(userCommand);
+      			case GET_DISTANCE : return getDistance(userCommand);
+      			case INVALID : return invalidFormat(userCommand);
+      			case EXIT : System.exit(0);
+      			default :
+        		// throw an error if the command is not recognized
+        		throw new Error("Unrecognized command type");
 		}
 		/*
 		 * ==============NOTE TO STUDENTS======================================
@@ -172,17 +166,16 @@ public class CityConnect {
 		if (commandTypeString == null)
 			throw new Error("command type string cannot be null!");
 
-		if (commandTypeString.equalsIgnoreCase("addroute")) {
-			return COMMAND_TYPE.ADD_ROUTE;
-		} else if (commandTypeString.equalsIgnoreCase("getdistance")) {
-			return COMMAND_TYPE.GET_DISTANCE;
-		} else if (commandTypeString.equalsIgnoreCase("exit")) {
-		 	return COMMAND_TYPE.EXIT;
-		} else {
-			return COMMAND_TYPE.INVALID;
-		}
+		switch (commandTypeString.toLowerCase()) {
+      			case COMMAND_ADDROUTE : return COMMAND_TYPE.ADD_ROUTE;
+      			case COMMAND_GETDISTANCE : return COMMAND_TYPE.GET_DISTANCE;
+      			case COMMAND_EXIT : return COMMAND_TYPE.EXIT;
+      			default : return COMMAND_TYPE.INVALID;
+    		}
 	}
-
+	
+	
+	
 	/**
 	 * This operation is used to find the distance between two locations
 	 * 
